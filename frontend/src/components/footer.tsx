@@ -11,18 +11,18 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <Logo className="h-10 w-10" />
               <span className="text-lg font-bold font-headline">
-                RBHS Reunion
+                RBMB Reunion
               </span>
             </div>
             <p className="text-muted-foreground text-sm">
-              &copy; {new Date().getFullYear()} Ranir Bazar High School Alumni Association. All Rights Reserved.
+              &copy; {new Date().getFullYear()} RBMBIAN Alumni Association. All Rights Reserved.
             </p>
           </div>
           <div>
             <h3 className="font-bold mb-4 font-headline text-lg">Contact Us</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="mailto:info@rbhsreunion.com" className="hover:text-primary transition-colors">info@rbhsreunion.com</a></li>
-              <li><a href="tel:+880123456789" className="hover:text-primary transition-colors">+880 123 456789</a></li>
+              <li><a href="mailto:nmahmud2017@gmail.com" className="hover:text-primary transition-colors">nmahmud2017@gmail.com</a></li>
+              <li><a href="tel:+880 1610-498000" className="hover:text-primary transition-colors">+880 1610-498000</a></li>
             </ul>
           </div>
           <div>

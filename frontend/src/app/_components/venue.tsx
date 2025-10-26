@@ -28,7 +28,7 @@ export default function Venue() {
               )}
             </div>
             <div className="p-8 md:p-12 flex flex-col justify-center bg-card">
-              <h3 className="text-3xl font-bold font-headline mb-6">Ranir Bazar High School Campus</h3>
+              <h3 className="text-3xl font-bold font-headline mb-6">Ranir Bazar Model School Campus</h3>
               
               <div className="space-y-6">
                 <div className="flex items-start gap-4">

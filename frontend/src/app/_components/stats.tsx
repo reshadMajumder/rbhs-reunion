@@ -52,7 +52,7 @@ export default function Stats() {
             <CardHeader>
               <CardTitle className="flex items-center justify-center gap-3">
                 <User className="text-primary" />
-                <span>Male Alumni</span>
+                <span>Male RBMBIANs</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -63,7 +63,7 @@ export default function Stats() {
             <CardHeader>
               <CardTitle className="flex items-center justify-center gap-3">
                 <Heart className="text-pink-500" />
-                <span>Female Alumni</span>
+                <span>Female RBMBIANs</span>
               </CardTitle>
             </CardHeader>
             <CardContent>

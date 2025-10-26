@@ -1,42 +1,111 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { Ticket, Menu, X } from 'lucide-react';
+import { Menu, X, LayoutDashboard, LogIn, Heart } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 10);
+
+      if (isMenuOpen) {
+        setIsHeaderVisible(true);
+        return;
+      }
+
+      if (currentScrollY > lastScrollY && currentScrollY > 200) {
+        // Scrolling down
+        setIsHeaderVisible(false);
+      } else {
+        // Scrolling up
+        setIsHeaderVisible(true);
+      }
+      setLastScrollY(currentScrollY);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Check login status from localStorage
+    const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
+    setIsLoggedIn(loggedInStatus);
+
+    // Listen for storage changes to update login status across tabs
+    const handleStorageChange = () => {
+      const newLoggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
+      if (isLoggedIn !== newLoggedInStatus) {
+        setIsLoggedIn(newLoggedInStatus);
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [isLoggedIn, lastScrollY, isMenuOpen]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+    toast({
+      title: 'Logged Out',
+      description: 'You have been successfully logged out.',
+    });
+    router.push('/');
+    setIsMenuOpen(false);
+  };
+  
+  const closeMenu = () => setIsMenuOpen(false);
+
+  const authButton = isLoggedIn ? (
+    <Button asChild size="lg" className="w-full sm:w-auto" onClick={closeMenu}>
+      <Link href="/dashboard"><LayoutDashboard className="mr-2 h-5 w-5" />Dashboard</Link>
+    </Button>
+  ) : (
+    <Button asChild size="lg" className="w-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90" onClick={closeMenu}>
+      <Link href="/login"><LogIn className="mr-2 h-5 w-5" />Login</Link>
+    </Button>
+  );
 
   return (
     <header
       className={cn(
         'sticky top-0 z-40 w-full transition-all duration-300',
-        isScrolled || isMenuOpen ? 'bg-background/80 shadow-md backdrop-blur-lg' : 'bg-transparent'
+        isScrolled || isMenuOpen ? 'bg-background/95 shadow-md backdrop-blur-sm' : 'bg-transparent',
+        isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
       )}
     >
-      <div className="container mx-auto flex h-20 items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Logo className="h-10 w-10" />
+      <div className="container mx-auto flex h-16 items-center justify-between">
+        <Link href="/" className="flex items-center gap-3">
+          <Logo className="h-10 w-10 transition-transform hover:scale-110" />
           <h1 className="hidden text-xl font-bold tracking-tight text-foreground sm:block font-headline">
-            Ranir Bazar High School Reunion
+            RBMB Reunion
           </h1>
-        </div>
-        <div className="hidden sm:block">
-          <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg hover:shadow-xl transition-shadow">
-            <Ticket className="mr-2 h-5 w-5" />
-            Register Now
+        </Link>
+        <div className="hidden sm:flex items-center gap-2">
+          <Button variant="ghost" asChild>
+            <Link href="/dashboard/donate"><Heart className="mr-2 h-4 w-4" /> Donate</Link>
           </Button>
+          {authButton}
+          {isLoggedIn && (
+            <Button variant="ghost" onClick={handleLogout}>Logout</Button>
+          )}
         </div>
         <div className="sm:hidden">
           <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -46,11 +115,16 @@ export default function Header() {
         </div>
       </div>
       {isMenuOpen && (
-        <div className="sm:hidden pb-4 px-4">
-          <Button size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg hover:shadow-xl transition-shadow">
-            <Ticket className="mr-2 h-5 w-5" />
-            Register Now
-          </Button>
+        <div className="sm:hidden p-4 border-t">
+          <div className="flex flex-col gap-4">
+             <Button variant="outline" asChild className="w-full" onClick={closeMenu}>
+                <Link href="/dashboard/donate"><Heart className="mr-2 h-4 w-4" /> Donate</Link>
+            </Button>
+            {authButton}
+            {isLoggedIn && (
+              <Button variant="outline" className="w-full" onClick={handleLogout}>Logout</Button>
+            )}
+          </div>
         </div>
       )}
     </header>

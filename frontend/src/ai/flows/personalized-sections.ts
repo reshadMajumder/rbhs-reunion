@@ -19,7 +19,7 @@ const PersonalizedSectionsInputSchema = z.object({
   schoolInfo: z
     .string()
     .optional()
-    .describe('General information about Ranir Bazar High School.'),
+    .describe('General information about Ranir Bazar Model School.'),
 });
 
 export type PersonalizedSectionsInput = z.infer<
@@ -42,7 +42,7 @@ const personalizedSectionsPrompt = ai.definePrompt({
   name: 'personalizedSectionsPrompt',
   input: {schema: PersonalizedSectionsInputSchema},
   output: {schema: PersonalizedSectionsOutputSchema},
-  prompt: `Based on the user's activity and school information, suggest which of the following sections would be most relevant to display to the user to increase engagement and registration for the Ranir Bazar High School reunion. Available sections include: Gifts, Food, Music.
+  prompt: `Based on the user's activity and school information, suggest which of the following sections would be most relevant to display to the user to increase engagement and registration for the Ranir Bazar Model School reunion. Available sections include: Gifts, Food, Music.
 
 User Activity: {{{userActivity}}}
 School Information: {{{schoolInfo}}}

@@ -52,3 +52,33 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .marquee {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, white 20%, white 80%, transparent);
+    mask-image: linear-gradient(to right, transparent, white 20%, white 80%, transparent);
+  }
+
+  .marquee-content {
+    display: flex;
+    animation: marquee 10s linear infinite;
+  }
+  
+  @media (max-width: 640px) {
+    .marquee-content {
+      animation: marquee 5s linear infinite;
+    }
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+}

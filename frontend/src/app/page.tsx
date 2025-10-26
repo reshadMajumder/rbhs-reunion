@@ -25,11 +25,11 @@ export default function Home() {
   return (
     <>
       <Loader />
-      <div className="relative z-10 bg-background/80 backdrop-blur-sm">
+      <div className="relative z-10 bg-background">
         <Header />
         <main>
           <Hero />
-          <div className="relative">
+          <div className="relative bg-background/80">
             {parallaxImage && (
               <div className="absolute inset-0 z-0">
                 <Image

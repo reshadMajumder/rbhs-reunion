@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 const pricingTiers = [
   {
-    title: 'Vintage Alumni',
+    title: 'Vintage RBMBIAN',
     batch: '1998 - 2000',
     price: 3000,
     features: ['Premium Souvenir Kit', 'Front Row Seating', 'Special Mention', 'All-Access Pass'],
