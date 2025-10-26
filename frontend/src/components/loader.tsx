@@ -24,7 +24,7 @@ export default function Loader() {
     >
       <div className="relative">
         <Image
-          src="https://res.cloudinary.com/dzgs1uhn0/image/upload/v1761321900/rhs-loader_fxqayt.png"
+          src="https://res.cloudinary.com/dzgs1uhn0/image/upload/v1761468825/rbmb2-loader-removebg-preview_dicca6.png"
           alt="Loading..."
           width={200}
           height={200}
