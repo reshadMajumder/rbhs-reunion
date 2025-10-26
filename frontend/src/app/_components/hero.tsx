@@ -26,7 +26,7 @@ export default function Hero() {
         Your browser does not support the video tag.
       </video>
       <div className="relative z-20 container mx-auto px-4 flex flex-col items-center">
-        <h2 className="font-graffiti text-2xl md:text-4xl text-amber-300 drop-shadow-lg mb-4">
+        <h2 className="font-headline text-2xl md:text-4xl text-amber-300 drop-shadow-lg mb-4">
           RBMB grand reunion 2026
         </h2>
         <h1 className="font-headline text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-tight drop-shadow-2xl">
