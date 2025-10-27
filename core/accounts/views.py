@@ -32,11 +32,9 @@ class LoginView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data['user']
             tokens = get_tokens_for_user(user)
-            user_data = UserSerializer(user).data
             
             return Response({
                 'message': 'Login successful',
-                'user': user_data,
                 'tokens': tokens
             }, status=status.HTTP_200_OK)
         
