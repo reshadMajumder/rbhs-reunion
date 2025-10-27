@@ -197,33 +197,81 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = 'accounts.User'
 
-
 JAZZMIN_SETTINGS = {
     "site_title": "RBHS Reunion Admin",
     "site_header": "RBHS Reunion",
     "site_brand": "RBHS Reunion",
     "welcome_sign": "Welcome to RBHS Reunion Admin",
     
-    "topmenu_links": [],  # optional top links
+    # Custom CSS and JS for dashboard
+    "custom_css": None,
+    "custom_js": None,
+    
+    # Top menu links
+    "topmenu_links": [
+        # {"name": "Dashboard Stats", "url": "/api/stats/admin-dashboard/", "new_window": True},
+        # {"name": "Registration Stats", "url": "/api/stats/registration-stats/", "new_window": True},
+        # {"name": "Donation Stats", "url": "/api/stats/donation-stats/", "new_window": True},
+    ],
+    
+    # Icons for models
     "icons": {
         "accounts.user": "fas fa-user",
+        "accounts.user": "fas fa-users",
         "tickets.ticket": "fas fa-ticket-alt",
         "payments.payment": "fas fa-money-bill-wave",
-        "notices.notice": "fas fa-bullhorn",
-        # other icons...
+        "notice.notice": "fas fa-bullhorn",
+        "auth.group": "fas fa-users",
+        "auth.permission": "fas fa-lock",
     },
 
-    "order_with_respect_to": "custom",  # custom ordering
-    "custom_links": {},
+    # Custom ordering
+    "order_with_respect_to": ["accounts", "payments", "tickets", "notice"],
     
+  
+    
+    # Top menu items
     "topmenu": [
-        # This is the top section in sidebar
         {"name": "Users", "app": "accounts", "model": "user"},
-        {"name": "Tickets", "app": "tickets", "model": "ticket"},
-        {"name": "Notice", "app": "notices", "model": "notice"},
         {"name": "Payments", "app": "payments", "model": "payment"},
+        {"name": "Tickets", "app": "tickets", "model": "ticket"},
+        {"name": "Notices", "app": "notice", "model": "notice"},
     ],
 
-    "hide_apps": [],  # apps to hide if needed
-    "hide_models": [],  # models to hide if needed
+    # Hide apps/models if needed
+    "hide_apps": [],
+    "hide_models": [],
+    
+    # UI customization
+    "theme": "default",
+    "dark_mode_theme": "darkly",
+    
+    # Sidebar customization
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    
+    # Related modal
+    "related_modal_active": True,
+    
+    # Custom colors
+    "brand_colors": {
+        "primary": "#2E86AB",
+        "secondary": "#A23B72",
+        "success": "#F18F01",
+        "info": "#C73E1D",
+        "warning": "#F18F01",
+        "danger": "#C73E1D",
+        "light": "#F8F9FA",
+        "dark": "#212529",
+    },
+    
+    # Logo
+    "logo": None,
+    "logo_icon": None,
+    
+    # Copyright
+    "copyright": "RBHS Reunion 2025",
 }
+
