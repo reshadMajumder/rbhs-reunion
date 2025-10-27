@@ -22,20 +22,34 @@ class PaymentListCreateView(APIView):
     @transaction.atomic
     def post(self, request):
         serializer = PaymentSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                payment = serializer.save(user=request.user)
-                return Response(
-                    PaymentSerializer(payment).data,
-                    status=status.HTTP_201_CREATED
-                )
-            except Exception as e:
-                # rollback automatically triggered by atomic if exception raised
-                transaction.set_rollback(True)
-                return Response(
-                    {"detail": f"Payment creation failed: {str(e)}"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
+        payment_type = serializer.validated_data.get("payment_type")
+
+        try:
+            # --- Rule enforcement ---
+            if payment_type == "registration":
+                existing_registration = Payment.objects.filter(
+                    user=request.user, payment_type="registration"
+                ).exists()
+                if existing_registration:
+                    return Response(
+                        {"detail": "You have already made a registration payment."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+
+            # --- Create the payment ---
+            payment = serializer.save(user=request.user)
+
+            return Response(
+                PaymentSerializer(payment).data,
+                status=status.HTTP_201_CREATED,
+            )
+
+        except Exception as e:
+            transaction.set_rollback(True)
+            return Response(
+                {"detail": f"Payment creation failed: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
