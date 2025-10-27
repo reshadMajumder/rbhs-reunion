@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     'accounts',
     'payments',
     'tickets',
+    'notice',
 
 
 ]
@@ -193,3 +195,34 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'accounts.User'
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "RBHS Reunion Admin",
+    "site_header": "RBHS Reunion",
+    "site_brand": "RBHS Reunion",
+    "welcome_sign": "Welcome to RBHS Reunion Admin",
+    
+    "topmenu_links": [],  # optional top links
+    "icons": {
+        "accounts.user": "fas fa-user",
+        "tickets.ticket": "fas fa-ticket-alt",
+        "payments.payment": "fas fa-money-bill-wave",
+        "notices.notice": "fas fa-bullhorn",
+        # other icons...
+    },
+
+    "order_with_respect_to": "custom",  # custom ordering
+    "custom_links": {},
+    
+    "topmenu": [
+        # This is the top section in sidebar
+        {"name": "Users", "app": "accounts", "model": "user"},
+        {"name": "Tickets", "app": "tickets", "model": "ticket"},
+        {"name": "Notice", "app": "notices", "model": "notice"},
+        {"name": "Payments", "app": "payments", "model": "payment"},
+    ],
+
+    "hide_apps": [],  # apps to hide if needed
+    "hide_models": [],  # models to hide if needed
+}
