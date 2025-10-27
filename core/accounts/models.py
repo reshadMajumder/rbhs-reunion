@@ -22,10 +22,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     GENDER_CHOICES = [('male','Male'),('female','Female'),('other','Other')]
     RELIGION_CHOICES = [('islam','Islam'),('hinduism','Hinduism'),('christianity','Christianity'),('buddhism','Buddhism'),('other','Other')]
     TSHIRT_SIZE_CHOICES = [('S','S'),('M','M'),('L','L'),('XL','XL'),('XXL','XXL')]
+    BATCH_CHOICES = [(str(year), str(year)) for year in range(1989, 2028)]
+
 
     phone = models.CharField(max_length=15, unique=True)
     name = models.CharField(max_length=255,null=True,blank=True)
-    batch= models.CharField(max_length=255,null=True,blank=True)
+    batch= models.CharField(max_length=255,choices=BATCH_CHOICES,null=True,blank=True)
     profession =models.CharField(max_length=255,null=True,blank=True)
     bloodGroup =models.CharField(max_length=10,null=True,blank=True)
     subject = models.CharField(max_length=255,null=True,blank=True)

@@ -8,6 +8,8 @@ urlpatterns = [
     path('api/payment/',include('payments.urls')),
     path('api/ticket/',include('tickets.urls')),
     path('api/notice/',include('notice.urls')),
+    path('api/stats/',include('stats.urls')),
+
 
 
 
