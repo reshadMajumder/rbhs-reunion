@@ -35,7 +35,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     religion = models.CharField(max_length=20, choices=RELIGION_CHOICES, null=True, blank=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
     profile_image = CloudinaryField('image', blank=True, null=True)
-
+    is_guest = models.BooleanField(default=False)
+    add_my_image_to_magazine=models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)

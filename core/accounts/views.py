@@ -113,9 +113,22 @@ class LogoutAllView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-class ProfileView(generics.RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
+
+
+class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_object(self):
-        return self.request.user
+    def get(self, request):
+        """Get current user's profile"""
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        """Full update user profile"""
+        serializer = UserSerializer(request.user, data=request.data, partial=True)  # ✅ partial=True allows optional fields
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
