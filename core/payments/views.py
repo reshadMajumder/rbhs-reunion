@@ -4,7 +4,7 @@ from rest_framework import status, permissions
 from .models import Payment
 from .serializers import PaymentSerializer
 from django.db import transaction
-
+from tickets.models import Ticket
 class PaymentListCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -41,6 +41,12 @@ class PaymentListCreateView(APIView):
 
             # --- Create the payment ---
             payment = serializer.save(user=request.user)
+
+            # If donation → update ticket
+            if payment_type == "donation":
+                ticket, _ = Ticket.objects.get_or_create(user=request.user)
+                ticket.has_donation = True
+                ticket.save()
 
             return Response(
                 PaymentSerializer(payment).data,

@@ -99,7 +99,6 @@ class LogoutAllView(APIView):
         try:
             # Get all outstanding tokens for the user
             tokens = OutstandingToken.objects.filter(user=request.user)
-            
             # Blacklist all tokens
             for token in tokens:
                 token.blacklist()
