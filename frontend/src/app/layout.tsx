@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Ranir Bazar High School Reunion',
-  description: 'Join us for a memorable reunion of Ranir Bazar High School RBMBIANs.',
+  title: 'Ranir Bazar Model School Reunion',
+  description: 'Join us for a memorable reunion of Ranir Bazar Model School RBMBIANs.',
   icons: {
     icon: '/favicon.ico',
   },

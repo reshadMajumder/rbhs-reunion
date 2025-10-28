@@ -1,7 +1,7 @@
-
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DollarSign, CreditCard } from 'lucide-react';
@@ -10,8 +10,9 @@ import { useToast } from '@/hooks/use-toast';
 export default function DonationForm() {
     const [amount, setAmount] = useState('');
     const { toast } = useToast();
+    const router = useRouter();
 
-    const handleDonate = () => {
+    const handleProceedToPayment = () => {
         if (!amount || Number(amount) <= 0) {
             toast({
                 variant: 'destructive',
@@ -20,11 +21,7 @@ export default function DonationForm() {
             });
             return;
         }
-        toast({
-            title: 'Thank you!',
-            description: `Your donation of ${Number(amount).toLocaleString()}tk is being processed.`,
-        });
-        setAmount('');
+        router.push(`/dashboard/payment?amount=${amount}&type=donation`);
     }
 
   return (
@@ -50,7 +47,7 @@ export default function DonationForm() {
                  </Button>
             ))}
         </div>
-        <Button size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleDonate}>
+        <Button size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleProceedToPayment}>
             <CreditCard className="mr-2 h-5 w-5" />
             Proceed to Payment
         </Button>

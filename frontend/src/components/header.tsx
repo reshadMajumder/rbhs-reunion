@@ -9,6 +9,7 @@ import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Menu, X, LayoutDashboard, LogIn, Heart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { API_BASE_URL } from '@/lib/constants';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -60,8 +61,25 @@ export default function Header() {
     };
   }, [isLoggedIn, lastScrollY, isMenuOpen]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    if (refreshToken) {
+        try {
+            await fetch(`${API_BASE_URL}/api/accounts/logout/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ refresh: refreshToken }),
+            });
+        } catch (error) {
+            console.error('Logout API call failed:', error);
+        }
+    }
+
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('refreshToken');
     setIsLoggedIn(false);
     toast({
       title: 'Logged Out',

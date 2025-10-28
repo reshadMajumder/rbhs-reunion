@@ -21,8 +21,8 @@ export default function Footer() {
           <div>
             <h3 className="font-bold mb-4 font-headline text-lg">Contact Us</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="mailto:nmahmud2017@gmail.com" className="hover:text-primary transition-colors">nmahmud2017@gmail.com</a></li>
-              <li><a href="tel:+880 1610-498000" className="hover:text-primary transition-colors">+880 1610-498000</a></li>
+              <li><a href="mailto:nmahmud2017@gmail.com" className="hover:text-primary transition-colors">info@rbhsreunion.com</a></li>
+              <li><a href="tel:+880 1610-498000" className="hover:text-primary transition-colors">+880 123 456789</a></li>
             </ul>
           </div>
           <div>

@@ -1,18 +1,23 @@
+
 'use client';
 
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Ticket } from 'lucide-react';
+import { Ticket, Star } from 'lucide-react';
 import Link from 'next/link';
 
-const event = {
-  name: 'RBMB Grand Reunion 2026',
-  date: 'December 25, 2025',
-  tier: 'Vintage RBMBIAN',
-  paymentStatus: 'Paid',
-};
+interface RegisteredEventsProps {
+    hasDonation: boolean;
+}
 
-export default function RegisteredEvents() {
+export default function RegisteredEvents({ hasDonation }: RegisteredEventsProps) {
+  const event = {
+    name: 'RBMB Grand Reunion 2026',
+    date: 'December 25, 2025',
+    tier: hasDonation ? 'Valued Contributor' : 'Alumni',
+    paymentStatus: 'Paid',
+  };
+
   return (
     <Card className="shadow-lg h-full">
       <CardHeader>
@@ -25,9 +30,21 @@ export default function RegisteredEvents() {
             <p className="text-sm text-muted-foreground">{event.date}</p>
           </div>
           <div className="text-right">
-            <p className="font-semibold">{event.tier}</p>
+             <div className="font-semibold flex items-center gap-2 justify-end">
+                {hasDonation && <Star className="h-4 w-4 text-amber-500" />}
+                <p>{event.tier}</p>
+            </div>
             <p className="text-sm text-green-600 font-bold">{event.paymentStatus}</p>
           </div>
+        </div>
+        <div className="text-sm text-muted-foreground p-4 border rounded-lg bg-background">
+          <h4 className="font-bold mb-2">What's Included:</h4>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Full Access to All Reunion Events</li>
+            <li>Grand Gala Dinner</li>
+            <li>Exclusive Souvenir Kit</li>
+            <li>Alumni Network Directory</li>
+          </ul>
         </div>
       </CardContent>
       <CardFooter>

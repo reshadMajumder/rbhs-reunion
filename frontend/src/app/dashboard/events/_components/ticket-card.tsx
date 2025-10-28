@@ -1,5 +1,7 @@
+
 'use client';
 
+import * as React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Logo } from '@/components/logo';
 import QRCode from 'qrcode.react';
@@ -44,19 +46,19 @@ const ticketStyles: Record<TicketType, { bg: string, text: string, badge: string
     }
 };
 
-export default function TicketCard({
+const TicketCard = React.forwardRef<HTMLDivElement, TicketCardProps>(({
   alumniName,
   ticketType,
   guestCount,
   childCount,
   secretCode,
   isDonator,
-}: TicketCardProps) {
+}, ref) => {
     const finalTicketType = isDonator ? 'Premium' : ticketType;
     const styles = ticketStyles[finalTicketType];
 
   return (
-    <Card className={cn("w-full max-w-4xl mx-auto shadow-2xl rounded-2xl overflow-hidden font-sans bg-gradient-to-br", styles.bg)}>
+    <Card ref={ref} className={cn("w-full max-w-4xl mx-auto shadow-2xl rounded-2xl overflow-hidden font-sans bg-gradient-to-br", styles.bg)}>
       <div className="flex flex-col md:flex-row">
         {/* Left Side - Event Info */}
         <div className={cn("w-full md:w-2/3 p-6 md:p-8 relative flex flex-col justify-between", styles.text)}>
@@ -118,7 +120,7 @@ export default function TicketCard({
             <div className="bg-white p-2 rounded-lg shadow-md inline-block my-2">
               <QRCode value={secretCode} size={128} level="H" bgColor="#FFFFFF" fgColor="#000000" />
             </div>
-            <p className="mt-2 text-xs font-mono px-4 opacity-70">
+            <p className="mt-2 text-xs font-mono px-4 opacity-70 break-all">
               {secretCode}
             </p>
             <p className="mt-4 text-xs font-light px-4 opacity-90">
@@ -129,4 +131,8 @@ export default function TicketCard({
       </div>
     </Card>
   );
-}
+});
+
+TicketCard.displayName = 'TicketCard';
+
+export default TicketCard;

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,36 +27,27 @@ import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Ruler } from 'lucide-react';
-
+import { API_BASE_URL } from '@/lib/constants';
+import { fetchWithAuth } from '@/lib/api';
+import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const profileFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
-  phone: z.string().min(10, { message: 'Please enter a valid phone number.' }),
+  phone: z.string().optional(),
   bloodGroup: z.string().optional(),
   profession: z.string().min(2, { message: 'Profession is required.' }),
   batch: z.coerce.number().int().min(1980, 'Invalid batch year.').max(new Date().getFullYear(), 'Invalid batch year.'),
-  subject: z.enum(['Science', 'Commerce', 'Humanities'], { required_error: 'Please select a subject.' }),
-  religion: z.string().min(2, { message: 'Religion is required.' }),
-  gender: z.enum(['Male', 'Female'], { required_error: 'Please select a gender.' }),
-  tshirtSize: z.enum(['S', 'M', 'L', 'XL', 'XXL'], { required_error: 'Please select your T-shirt size.' }),
+  subject: z.enum(['science', 'commerce', 'humanities']).optional(),
+  religion: z.string().optional(),
+  gender: z.enum(['male', 'female', 'other']).optional(),
+  t_shirt_size: z.enum(['S', 'M', 'L', 'XL', 'XXL']).optional(),
+  profile_image: z.any().optional(),
+  is_guest: z.boolean().optional(),
+  add_my_image_to_magazine: z.boolean().optional(),
 });
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
-
-// Dummy user data
-const defaultValues: Partial<ProfileFormValues> = {
-  name: 'Anisul Islam',
-  email: 'user@example.com',
-  phone: '1234567890',
-  batch: 2002,
-  profession: 'Software Engineer',
-  bloodGroup: 'O+',
-  subject: 'Science',
-  gender: 'Male',
-  religion: 'Muslim',
-  tshirtSize: 'L'
-};
+export type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 const tshirtSizes = [
     { size: 'S', chest: '38"', length: '27"' },
@@ -65,7 +57,11 @@ const tshirtSizes = [
     { size: 'XXL', chest: '46"', length: '31"' },
 ];
 
-export default function ProfileForm() {
+interface ProfileFormProps {
+    defaultValues: Partial<ProfileFormValues>;
+}
+
+export default function ProfileForm({ defaultValues }: ProfileFormProps) {
   const { toast } = useToast();
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -73,12 +69,51 @@ export default function ProfileForm() {
     mode: 'onChange',
   });
 
-  function onSubmit(data: ProfileFormValues) {
-    console.log(data);
-    toast({
-      title: 'Profile Updated!',
-      description: 'Your changes have been saved successfully.',
-    });
+  const { formState: { dirtyFields, isSubmitting } } = form;
+
+  async function onSubmit(data: ProfileFormValues) {
+    const changedData: Partial<ProfileFormValues> = {};
+    
+    // Only include dirty fields in the submission data
+    for (const key in dirtyFields) {
+      if (key in data) {
+        (changedData as any)[key] = (data as any)[key];
+      }
+    }
+
+    // If no fields have changed, don't submit.
+    if (Object.keys(changedData).length === 0) {
+        toast({
+            title: 'No changes to save',
+            description: 'You haven\'t made any changes to your profile.',
+        });
+        return;
+    }
+
+    try {
+        const response = await fetchWithAuth(`${API_BASE_URL}/api/accounts/profile/`, {
+            method: 'PUT',
+            body: JSON.stringify(changedData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to update profile.');
+        }
+        
+        toast({
+            title: 'Profile Updated!',
+            description: 'Your changes have been saved successfully.',
+        });
+        form.reset(data); // Reset form state with new data to clear dirty fields
+
+    } catch (error: any) {
+        toast({
+            variant: 'destructive',
+            title: 'Update Failed',
+            description: error.message || 'An unexpected error occurred.',
+        });
+    }
   }
 
   return (
@@ -105,30 +140,14 @@ export default function ProfileForm() {
                 <FormItem>
                 <FormLabel>Phone Number</FormLabel>
                 <FormControl>
-                    <Input placeholder="+880123456789" {...field} />
+                    <Input placeholder="+880123456789" {...field} disabled />
                 </FormControl>
+                <FormDescription>Your phone number cannot be changed.</FormDescription>
                 <FormMessage />
                 </FormItem>
             )}
             />
         </div>
-
-        <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                    <Input type="email" placeholder="you@example.com" {...field} />
-                </FormControl>
-                 <FormDescription>
-                    Your email address is kept private.
-                </FormDescription>
-                <FormMessage />
-                </FormItem>
-            )}
-        />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
@@ -138,8 +157,9 @@ export default function ProfileForm() {
                 <FormItem>
                 <FormLabel>Batch Year</FormLabel>
                 <FormControl>
-                    <Input type="number" placeholder="e.g., 2005" {...field} />
+                    <Input type="number" placeholder="e.g., 2005" {...field} disabled />
                 </FormControl>
+                <FormDescription>Your batch year cannot be changed.</FormDescription>
                 <FormMessage />
                 </FormItem>
             )}
@@ -187,15 +207,15 @@ export default function ProfileForm() {
                     className="flex flex-col space-y-1"
                     >
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl><RadioGroupItem value="Science" /></FormControl>
+                        <FormControl><RadioGroupItem value="science" /></FormControl>
                         <FormLabel className="font-normal">Science</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl><RadioGroupItem value="Commerce" /></FormControl>
+                        <FormControl><RadioGroupItem value="commerce" /></FormControl>
                         <FormLabel className="font-normal">Commerce</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl><RadioGroupItem value="Humanities" /></FormControl>
+                        <FormControl><RadioGroupItem value="humanities" /></FormControl>
                         <FormLabel className="font-normal">Humanities</FormLabel>
                     </FormItem>
                     </RadioGroup>
@@ -217,12 +237,16 @@ export default function ProfileForm() {
                     className="flex flex-col space-y-1"
                     >
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl><RadioGroupItem value="Male" /></FormControl>
+                        <FormControl><RadioGroupItem value="male" /></FormControl>
                         <FormLabel className="font-normal">Male</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl><RadioGroupItem value="Female" /></FormControl>
+                        <FormControl><RadioGroupItem value="female" /></FormControl>
                         <FormLabel className="font-normal">Female</FormLabel>
+                    </FormItem>
+                     <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl><RadioGroupItem value="other" /></FormControl>
+                        <FormLabel className="font-normal">Other</FormLabel>
                     </FormItem>
                     </RadioGroup>
                 </FormControl>
@@ -246,11 +270,10 @@ export default function ProfileForm() {
                         </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                        <SelectItem value="Muslim">Muslim</SelectItem>
-                        <SelectItem value="Hindu">Hindu</SelectItem>
-                        <SelectItem value="Christian">Christian</SelectItem>
-                        <SelectItem value="Buddhist">Buddhist</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
+                        <SelectItem value="islam">Islam</SelectItem>
+                        <SelectItem value="hinduism">Hinduism</SelectItem>
+                        <SelectItem value="buddhism">Buddhism</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                     </Select>
                     <FormMessage />
@@ -259,7 +282,7 @@ export default function ProfileForm() {
             />
             <FormField
                 control={form.control}
-                name="tshirtSize"
+                name="t_shirt_size"
                 render={({ field }) => (
                 <FormItem>
                     <div className="flex items-center justify-between">
@@ -317,7 +340,45 @@ export default function ProfileForm() {
             />
         </div>
         
-        <Button type="submit">Update Profile</Button>
+        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+                <FormLabel className="text-base">
+                Status
+                </FormLabel>
+                <FormDescription>
+                This was set during registration and cannot be changed.
+                </FormDescription>
+            </div>
+            <p className="text-sm font-medium">{defaultValues.is_guest ? 'Guest' : 'Alumni'}</p>
+        </FormItem>
+
+        
+        <FormField
+          control={form.control}
+          name="add_my_image_to_magazine"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+               <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                    Add image to magazine?
+                    </FormLabel>
+                    <FormDescription>
+                    Allow your profile image to be featured in the reunion magazine.
+                    </FormDescription>
+                </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        
+        <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Update Profile'}
+        </Button>
       </form>
     </Form>
   );

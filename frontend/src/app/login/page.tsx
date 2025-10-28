@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
+import { API_BASE_URL } from '@/lib/constants';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,31 +18,55 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      // Dummy check, replace with actual API call
-      if (phone === '1234567890' && password === '1') {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/accounts/login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phone, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
         toast({
           title: 'Login Successful',
-          description: 'Welcome back!',
+          description: data.message || 'Welcome back!',
         });
-        // In a real app, you'd save a token and user data in a context or state management solution.
-        // For this demo, we'll just simulate it with localStorage.
+        
+        // Store login state and tokens
         localStorage.setItem('isLoggedIn', 'true');
+        if (data.tokens) {
+            if (data.tokens.refresh) {
+                localStorage.setItem('refreshToken', data.tokens.refresh);
+            }
+            if (data.tokens.access) {
+                localStorage.setItem('accessToken', data.tokens.access);
+            }
+        }
+
         router.push('/dashboard');
       } else {
         toast({
           variant: 'destructive',
           title: 'Login Failed',
-          description: 'Invalid phone number or password. Please try again.',
+          description: data.detail || 'Invalid phone number or password. Please try again.',
         });
-        setIsLoading(false);
       }
-    }, 1500);
+    } catch (error) {
+       toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: 'Could not connect to the server. Please check your internet connection.',
+        });
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   return (

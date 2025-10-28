@@ -1,7 +1,6 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import DonationForm from './_components/donation-form';
-import DonorsList from './_components/donors-list';
+import TransactionHistory from './_components/transaction-history';
 
 export default function DonatePage() {
   return (
@@ -20,11 +19,11 @@ export default function DonatePage() {
       <div className="lg:col-span-2">
          <Card>
             <CardHeader>
-                <CardTitle className="font-headline text-2xl">RBMBIAN Contributions</CardTitle>
-                <CardDescription>Generous donations from our RBMBIANs.</CardDescription>
+                <CardTitle className="font-headline text-2xl">Transaction History</CardTitle>
+                <CardDescription>Your recent payments and donations.</CardDescription>
             </CardHeader>
             <CardContent>
-                <DonorsList />
+                <TransactionHistory />
             </CardContent>
         </Card>
       </div>

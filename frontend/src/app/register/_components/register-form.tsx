@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -30,20 +31,23 @@ import { useToast } from '@/hooks/use-toast';
 import { Upload, Ruler } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { API_BASE_URL } from '@/lib/constants';
+import { Switch } from '@/components/ui/switch';
 
 const registerFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
-  userImage: z.any().optional(), // In a real app, you'd want more robust validation
+  profile_image: z.any().refine(file => file, 'Profile image is required.'),
   bloodGroup: z.string().optional(),
-  phone: z.string().min(10, { message: 'Please enter a valid phone number.' }),
+  phone: z.string().optional(),
   profession: z.string().min(2, { message: 'Profession is required.' }),
-  batch: z.coerce.number().int().min(1980, 'Invalid batch year.').max(new Date().getFullYear(), 'Invalid batch year.'),
-  subject: z.enum(['Science', 'Commerce', 'Humanities'], { required_error: 'Please select a subject.' }),
-  religion: z.string().min(2, { message: 'Religion is required.' }),
-  gender: z.enum(['Male', 'Female'], { required_error: 'Please select a gender.' }),
-  tshirtSize: z.enum(['S', 'M', 'L', 'XL', 'XXL'], { required_error: 'Please select your T-shirt size.' }),
+  batch: z.coerce.number().int().min(1989, 'Batch year must be 1989 or later.').max(2026, 'Batch year must be 2026 or earlier.'),
+  subject: z.enum(['science', 'commerce', 'humanities']).optional(),
+  religion: z.string().optional(),
+  gender: z.enum(['male', 'female', 'other'], { required_error: 'Please select a gender.' }),
+  t_shirt_size: z.enum(['S', 'M', 'L', 'XL', 'XXL'], { required_error: 'Please select your T-shirt size.' }),
+  is_guest: z.boolean().optional().default(false),
+  add_my_image_to_magazine: z.boolean().optional().default(false),
   agree: z.boolean().refine((val) => val === true, {
     message: 'You must agree to the terms.',
   }),
@@ -59,6 +63,9 @@ const tshirtSizes = [
     { size: 'XXL', chest: '46"', length: '31"' },
 ];
 
+const batchYears = Array.from({ length: 2026 - 1989 + 1 }, (_, i) => String(1989 + i)).reverse();
+
+
 export default function RegisterForm() {
   const router = useRouter();
   const { toast } = useToast();
@@ -68,6 +75,10 @@ export default function RegisterForm() {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerFormSchema),
     mode: 'onChange',
+    defaultValues: {
+        is_guest: false,
+        add_my_image_to_magazine: false,
+    }
   });
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -78,22 +89,54 @@ export default function RegisterForm() {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      form.setValue('userImage', file);
+      form.setValue('profile_image', file);
     }
   }
 
-  function onSubmit(data: RegisterFormValues) {
+  async function onSubmit(data: RegisterFormValues) {
     setIsLoading(true);
-    console.log(data);
+    
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+        if (key === 'is_guest' || key === 'add_my_image_to_magazine') {
+            formData.append(key, String(value));
+        } else if (value) {
+            formData.append(key, value);
+        }
+    });
 
-    // Simulate API call
-    setTimeout(() => {
-      toast({
-        title: 'Registration Successful',
-        description: "You can now log in with your credentials.",
-      });
-      router.push('/login');
-    }, 1500);
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/accounts/register/`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            toast({
+                title: 'Registration Successful',
+                description: "You can now log in with your credentials.",
+            });
+            router.push('/login');
+        } else {
+            // Handle specific field errors from the API
+            const errorMessages = Object.entries(result).map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`).join('\n');
+            toast({
+                variant: 'destructive',
+                title: 'Registration Failed',
+                description: errorMessages || 'An unexpected error occurred. Please try again.',
+            });
+        }
+    } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: 'There was a problem with your request. Please check your connection.',
+        });
+    } finally {
+        setIsLoading(false);
+    }
   }
 
   return (
@@ -101,7 +144,7 @@ export default function RegisterForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="userImage"
+          name="profile_image"
           render={({ field }) => (
             <FormItem className="flex flex-col items-center">
               <FormLabel>
@@ -156,19 +199,6 @@ export default function RegisterForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="you@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
@@ -180,23 +210,7 @@ export default function RegisterForm() {
               </FormItem>
             )}
           />
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="batch"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Batch Year</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="e.g., 2005" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
+           <FormField
             control={form.control}
             name="bloodGroup"
             render={({ field }) => (
@@ -211,20 +225,46 @@ export default function RegisterForm() {
           />
         </div>
         
-        <FormField
-          control={form.control}
-          name="profession"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Profession</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g., Software Engineer" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="batch"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Batch Year</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={String(field.value)}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your batch" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                        {batchYears.map((year) => (
+                            <SelectItem key={year} value={year}>
+                                {year}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="profession"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Profession</FormLabel>
+                <FormControl>
+                    <Input placeholder="e.g., Software Engineer" {...field} />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -239,15 +279,15 @@ export default function RegisterForm() {
                     className="flex flex-col space-y-1"
                   >
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl><RadioGroupItem value="Science" /></FormControl>
+                      <FormControl><RadioGroupItem value="science" /></FormControl>
                       <FormLabel className="font-normal">Science</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl><RadioGroupItem value="Commerce" /></FormControl>
+                      <FormControl><RadioGroupItem value="commerce" /></FormControl>
                       <FormLabel className="font-normal">Commerce</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl><RadioGroupItem value="Humanities" /></FormControl>
+                      <FormControl><RadioGroupItem value="humanities" /></FormControl>
                       <FormLabel className="font-normal">Humanities</FormLabel>
                     </FormItem>
                   </RadioGroup>
@@ -269,12 +309,16 @@ export default function RegisterForm() {
                     className="flex flex-col space-y-1"
                   >
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl><RadioGroupItem value="Male" /></FormControl>
+                      <FormControl><RadioGroupItem value="male" /></FormControl>
                       <FormLabel className="font-normal">Male</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl><RadioGroupItem value="Female" /></FormControl>
+                      <FormControl><RadioGroupItem value="female" /></FormControl>
                       <FormLabel className="font-normal">Female</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl><RadioGroupItem value="other" /></FormControl>
+                      <FormLabel className="font-normal">Other</FormLabel>
                     </FormItem>
                   </RadioGroup>
                 </FormControl>
@@ -298,11 +342,10 @@ export default function RegisterForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Muslim">Muslim</SelectItem>
-                      <SelectItem value="Hindu">Hindu</SelectItem>
-                      <SelectItem value="Christian">Christian</SelectItem>
-                      <SelectItem value="Buddhist">Buddhist</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
+                      <SelectItem value="islam">Islam</SelectItem>
+                      <SelectItem value="hinduism">Hinduism</SelectItem>
+                      <SelectItem value="buddhism">Buddhism</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -311,7 +354,7 @@ export default function RegisterForm() {
             />
             <FormField
               control={form.control}
-              name="tshirtSize"
+              name="t_shirt_size"
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between">
@@ -370,6 +413,52 @@ export default function RegisterForm() {
         </div>
         
         <FormField
+            control={form.control}
+            name="is_guest"
+            render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                        <FormLabel className="text-base">
+                        Registering as a Guest?
+                        </FormLabel>
+                        <FormDescription>
+                        Guests have different registration fees.
+                        </FormDescription>
+                    </div>
+                    <FormControl>
+                        <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        />
+                    </FormControl>
+                </FormItem>
+            )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="add_my_image_to_magazine"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>
+                  Add my image to the magazine
+                </FormLabel>
+                <FormDescription>
+                  I agree to have my profile image featured in the official reunion magazine.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
           control={form.control}
           name="agree"
           render={({ field }) => (
@@ -382,7 +471,7 @@ export default function RegisterForm() {
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>
-                  আমি এই মর্মে অঙ্গীকার করছি যে, পুলিশ লাইন উচ্চ বিদ্যালয়, কুমিল্লা “গ্র্যান্ড রিইউনিয়ন-২০২৫” অনুষ্ঠানে সকল প্রকার নিয়ম শৃঙ্খলার প্রতি সম্মান প্রদর্শন পূর্বক মেনে চলব ।
+                  আমি এই মর্মে অঙ্গীকার করছি যে, পুলিশ লাইন উচ্চ বিদ্যালয়, কুমিল্লা “গ্র্যান্ড রিইউনিয়ন-২০২৫” অনুষ্ঠানে সকল প্রকার নিয়ম শৃঙ্খলার प्रति সম্মান প্রদর্শন পূর্বক মেনে চলব ।
                 </FormLabel>
                 <FormDescription>
                   বি: দ্র:- পরিস্থিতি স্বাপেক্ষে তারিখ পরিবর্তন হতে পারে
@@ -399,3 +488,5 @@ export default function RegisterForm() {
     </Form>
   );
 }
+
+    

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { Home, LogOut, User, Calendar, Settings, Heart } from 'lucide-react';
+import { Home, LogOut, User, Calendar, Heart } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { cn } from '@/lib/utils';
 
@@ -18,7 +18,6 @@ const navItems = [
     { href: '/dashboard/profile', icon: User, label: 'Profile' },
     { href: '/dashboard/events', icon: Calendar, label: 'My Events' },
     { href: '/dashboard/donate', icon: Heart, label: 'Donate' },
-    { href: '/dashboard/settings', icon: Settings, label: 'Settings' },
 ]
 
 export default function SidebarNav({ onLogout }: SidebarNavProps) {

@@ -1,4 +1,3 @@
-
 import {
   Table,
   TableBody,
@@ -44,7 +43,7 @@ export default function DonorsList() {
                     <TableRow key={donation.name}>
                         <TableCell className="font-medium flex items-center gap-2">
                             {donation.name}
-                            {donation.isFeatured && <Badge variant="default" className="bg-amber-500 text-white">Top Donator</Badge>}
+                            {donation.isFeatured && <Badge variant="default" className="bg-amber-500 text-white">Top Donor</Badge>}
                         </TableCell>
                         <TableCell>{donation.batch}</TableCell>
                         <TableCell className="text-right font-semibold">{donation.amount.toLocaleString()}tk</TableCell>

@@ -7,16 +7,16 @@ import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Home, LogOut, User, Calendar, Settings, PanelLeft, Heart } from 'lucide-react';
+import { Home, LogOut, User, Calendar, PanelLeft, Heart } from 'lucide-react';
 import SidebarNav from './_components/sidebar-nav';
 import { cn } from '@/lib/utils';
+import { API_BASE_URL } from '@/lib/constants';
 
 const navItems = [
     { href: '/dashboard', icon: Home, label: 'Dashboard' },
     { href: '/dashboard/profile', icon: User, label: 'Profile' },
     { href: '/dashboard/events', icon: Calendar, label: 'My Events' },
     { href: '/dashboard/donate', icon: Heart, label: 'Donate' },
-    { href: '/dashboard/settings', icon: Settings, label: 'Settings' },
 ]
 
 export default function DashboardLayout({
@@ -37,8 +37,26 @@ export default function DashboardLayout({
     }
   }, [router]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    if (refreshToken) {
+      try {
+        await fetch(`${API_BASE_URL}/api/accounts/logout/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refresh: refreshToken }),
+        });
+      } catch (error) {
+        console.error('Logout API call failed:', error);
+      }
+    }
+    
+    // Always clear local storage and redirect
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('refreshToken');
     router.replace('/login');
   };
 

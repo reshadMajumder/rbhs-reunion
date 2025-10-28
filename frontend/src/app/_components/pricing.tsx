@@ -1,31 +1,32 @@
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Ticket, Star, Shield } from 'lucide-react';
+import { Star, Shield, User, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const pricingTiers = [
   {
-    title: 'Vintage RBMBIAN',
-    batch: '1998 - 2000',
-    price: 3000,
-    features: ['Premium Souvenir Kit', 'Front Row Seating', 'Special Mention', 'All-Access Pass'],
+    title: 'Senior RBMBIAN',
+    batch: 'Batch 1989 - 2016',
+    price: 1500,
+    features: ['Full Access to All Reunion Events', 'Grand Gala Dinner', 'Exclusive Souvenir Kit', 'Alumni Network Directory'],
     icon: <Star className="h-8 w-8 text-amber-400" />,
     isFeatured: true,
   },
   {
-    title: 'Golden Era',
-    batch: '2001 - 2015',
-    price: 2000,
-    features: ['Standard Souvenir', 'Access to all events', 'Gala Dinner', 'Photo Booth Access'],
+    title: 'Junior RBMBIAN',
+    batch: 'Batch 2017 - 2026',
+    price: 1000,
+    features: ['Full Access to All Reunion Events', 'Grand Gala Dinner', 'Standard Souvenir Kit', 'Networking Opportunities'],
     icon: <Shield className="h-8 w-8 text-primary" />,
     isFeatured: false,
   },
   {
-    title: 'New Generation',
-    batch: '2016 - 2025',
-    price: 1000,
-    features: ['Digital Souvenir', 'Access to main events', 'Gala Dinner', 'Networking Session'],
-    icon: <Ticket className="h-8 w-8 text-accent" />,
+    title: 'Guest',
+    batch: 'Accompanying an alumnus',
+    price: 800,
+    features: ['Access with Alumnus', 'Grand Gala Dinner', 'Photo Booth Access', 'Networking Opportunities'],
+    icon: <Users className="h-8 w-8 text-accent" />,
     isFeatured: false,
   },
 ];
@@ -39,7 +40,7 @@ export default function Pricing() {
           <p className="text-lg text-muted-foreground mt-2">Choose your pass to this unforgettable event.</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center max-w-6xl mx-auto">
           {pricingTiers.map((tier, index) => (
             <Card key={index} className={cn('flex flex-col h-full shadow-lg hover:shadow-2xl transition-all duration-300', tier.isFeatured && 'border-accent border-2 -translate-y-4 shadow-purple-200')}>
               <CardHeader className="items-center text-center">
@@ -62,8 +63,10 @@ export default function Pricing() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button className={cn("w-full", tier.isFeatured ? "bg-accent text-accent-foreground hover:bg-accent/90" : "bg-primary text-primary-foreground hover:bg-primary/90")}>
-                  Register as {tier.title}
+                <Button asChild className={cn("w-full", tier.isFeatured ? "bg-accent text-accent-foreground hover:bg-accent/90" : "bg-primary text-primary-foreground hover:bg-primary/90")}>
+                   <Link href="/register">
+                        Register as {tier.title}
+                   </Link>
                 </Button>
               </CardFooter>
             </Card>
