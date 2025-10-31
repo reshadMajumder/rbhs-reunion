@@ -10,3 +10,13 @@ class Notice(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Sponsors(models.Model):
+    name = models.CharField(max_length=55)
+    logo = models.ImageField(upload_to='sponsors/logos/')
+    serial_number = models.IntegerField(unique=True,)
+
+
+    def __str__(self):
+        return self.name
