@@ -12,26 +12,62 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { donations, type Donation } from "@/lib/donations-data";
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { type Donation, getDonations } from '@/lib/donations-service';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DonorsTable() {
+    const [donations, setDonations] = React.useState<Donation[]>([]);
+    const [isLoading, setIsLoading] = React.useState(true);
     const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('desc');
     
+    React.useEffect(() => {
+        async function fetchData() {
+            try {
+                const data = await getDonations();
+                setDonations(data.donations);
+            } catch (error) {
+                console.error("Failed to fetch donations", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchData();
+    }, []);
+
     const sortedDonations = React.useMemo(() => {
         const sorted = [...donations].sort((a, b) => {
+            const amountA = Number(a.amount);
+            const amountB = Number(b.amount);
             if (sortOrder === 'asc') {
-                return a.amount - b.amount;
+                return amountA - amountB;
             }
-            return b.amount - a.amount;
+            return amountB - amountA;
         });
         return sorted;
-    }, [sortOrder]);
+    }, [donations, sortOrder]);
 
     const toggleSortOrder = () => {
         setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
     }
+    
+    if (isLoading) {
+        return (
+             <div className="space-y-2">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+            </div>
+        )
+    }
+
+    if (donations.length === 0) {
+        return <p className="text-center text-muted-foreground">No donations have been made yet.</p>
+    }
+
 
     return (
         <div className="border rounded-md">
@@ -51,12 +87,12 @@ export default function DonorsTable() {
                 </TableHeader>
                 <TableBody>
                     {sortedDonations.map((donation, index) => (
-                    <TableRow key={donation.name + index}>
+                    <TableRow key={donation.transaction_id + index}>
                         <TableCell className="font-medium">{index + 1}</TableCell>
                         <TableCell>
                             <div className="flex items-center gap-3">
                                 <Avatar className="h-9 w-9">
-                                    <AvatarImage src={donation.avatar} alt={donation.name} />
+                                    <AvatarImage src={donation.image || undefined} alt={donation.name} />
                                     <AvatarFallback>{donation.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex flex-col">
@@ -66,7 +102,7 @@ export default function DonorsTable() {
                             </div>
                         </TableCell>
                         <TableCell>{donation.batch}</TableCell>
-                        <TableCell className="text-right font-semibold">{donation.amount.toLocaleString()}tk</TableCell>
+                        <TableCell className="text-right font-semibold">{Number(donation.amount).toLocaleString()}tk</TableCell>
                     </TableRow>
                     ))}
                 </TableBody>

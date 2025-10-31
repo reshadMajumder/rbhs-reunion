@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Home, LogOut, User, Calendar, PanelLeft, Heart } from 'lucide-react';
+import { Home, LogOut, User, Calendar, PanelLeft, Heart, Camera } from 'lucide-react';
 import SidebarNav from './_components/sidebar-nav';
 import { cn } from '@/lib/utils';
 import { API_BASE_URL } from '@/lib/constants';
@@ -16,6 +16,7 @@ const navItems = [
     { href: '/dashboard', icon: Home, label: 'Dashboard' },
     { href: '/dashboard/profile', icon: User, label: 'Profile' },
     { href: '/dashboard/events', icon: Calendar, label: 'My Events' },
+    { href: '/dashboard/photobooth', icon: Camera, label: 'Photo Frame' },
     { href: '/dashboard/donate', icon: Heart, label: 'Donate' },
 ]
 

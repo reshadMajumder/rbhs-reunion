@@ -1,28 +1,70 @@
-const sponsors = [
-  { name: 'Creative Solutions', logo: 'CS' },
-  { name: 'Tech Innovators', logo: 'TI' },
-  { name: 'Global Ventures', logo: 'GV' },
-  { name: 'Local Eats', logo: 'LE' },
-  { name: 'Future Forward', logo: 'FF' },
-  { name: 'Community Bank', logo: 'CB' },
-];
+'use client';
+
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { Skeleton } from '@/components/ui/skeleton';
+import { API_BASE_URL } from '@/lib/constants';
+
+interface Sponsor {
+  id: number;
+  name: string;
+  logo: string;
+  serial_number: number;
+}
 
 export default function Sponsors() {
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchSponsors() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/notice/sponsors/`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch sponsors');
+        }
+        const data = await response.json();
+        setSponsors(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchSponsors();
+  }, []);
+
   return (
     <section className="py-20">
       <div className="container mx-auto text-center">
         <h2 className="text-4xl md:text-5xl font-bold font-headline mb-4">Our Valued Sponsors</h2>
         <p className="text-lg text-muted-foreground mb-12">This event is made possible by their generous support.</p>
         
-        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-6">
-          {sponsors.map((sponsor) => (
-            <div key={sponsor.name} className="flex items-center gap-3 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-              <div className="flex items-center justify-center h-16 w-16 rounded-full bg-muted border-2 border-primary/20">
-                <span className="font-bold text-primary text-xl">{sponsor.logo}</span>
-              </div>
-              <span className="font-bold text-lg text-muted-foreground">{sponsor.name}</span>
-            </div>
-          ))}
+        <div className="flex flex-wrap items-start justify-center gap-x-12 gap-y-8">
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="flex flex-col items-center gap-4">
+                    <Skeleton className="h-20 w-32" />
+                    <Skeleton className="h-6 w-24" />
+                </div>
+            ))
+          ) : (
+            sponsors.map((sponsor) => (
+             sponsor.logo && (
+                <div key={sponsor.id} className="flex flex-col items-center gap-4 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300 w-40">
+                    <div className="relative h-20 w-32">
+                    <Image
+                        src={sponsor.logo}
+                        alt={`${sponsor.name} logo`}
+                        fill
+                        className="object-contain"
+                        />
+                    </div>
+                    <span className="font-semibold text-muted-foreground capitalize">{sponsor.name}</span>
+                </div>
+              )
+            ))
+          )}
         </div>
       </div>
     </section>

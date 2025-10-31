@@ -74,7 +74,7 @@ const TicketCard = React.forwardRef<HTMLDivElement, TicketCardProps>(({
             <div className="relative z-10 mt-8 md:mt-0">
                 <div className="bg-black/20 backdrop-blur-sm p-4 rounded-lg flex flex-col sm:flex-row justify-between gap-4 text-center">
                     <div>
-                        <p className="font-bold text-lg">Dec 25, 2025</p>
+                        <p className="font-bold text-lg">Mar 23, 2026</p>
                         <p className="text-xs opacity-70">Date</p>
                     </div>
                      <div>

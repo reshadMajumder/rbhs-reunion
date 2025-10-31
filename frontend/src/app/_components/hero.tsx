@@ -22,7 +22,7 @@ export default function Hero() {
         className="absolute z-0 w-auto min-w-full min-h-full max-w-none"
         poster="https://picsum.photos/seed/reunion-poster/1920/1080"
       >
-        <source src="https://res.cloudinary.com/dzgs1uhn0/video/upload/v1761321651/vid-ren_trk887.mp4" type="video/mp4" />
+        <source src="https://res.cloudinary.com/dxz64hu1o/video/upload/v1761937867/rbmb-hero-vid_fuxbk8.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <div className="relative z-20 container mx-auto px-4 flex flex-col items-center">
@@ -33,7 +33,7 @@ export default function Hero() {
           Back to Where It All Began
         </h1>
         <p className="mt-4 max-w-2xl text-md md:text-xl text-white/90 font-body">
-          Join us for the grand reunion of Ranir Bazar Model School. Reconnect, reminisce, and create new memories.
+          Join us for the grand reunion of Ranir Bazar High School. Reconnect, reminisce, and create new memories.
         </p>
         <div className="mt-12 w-full max-w-2xl">
           <Countdown />

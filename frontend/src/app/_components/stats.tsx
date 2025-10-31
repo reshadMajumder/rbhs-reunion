@@ -1,32 +1,80 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, User, Heart, Plus } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { API_BASE_URL } from '@/lib/constants';
 
-const totalRegistered = 482;
 const totalCapacity = 1000;
-const maleCount = 289;
-const femaleCount = 193;
-
-const currentYear = new Date().getFullYear();
-const batchData = Array.from({ length: currentYear - 1989 + 1 }, (_, i) => {
-    const year = 1989 + i;
-    return {
-        name: `${year}`,
-        count: Math.floor(Math.random() * 50) + 10, // Random registration count
-    };
-}).reverse(); // Show most recent years first
-
 const INITIAL_VISIBLE_COUNT = 12;
 
+interface RegistrationStats {
+    total_registered: number;
+    batch_wise_count: { [key: string]: number };
+    gender_count: {
+        male: number;
+        female: number;
+    };
+}
+
 export default function Stats() {
+  const [stats, setStats] = useState<RegistrationStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
+  
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/stats/registration-stats/`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch stats');
+        }
+        const data = await response.json();
+        setStats(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchStats();
+  }, []);
+
+  const batchData = stats 
+    ? Object.entries(stats.batch_wise_count)
+        .map(([year, count]) => ({ name: year, count }))
+        .sort((a, b) => Number(b.name) - Number(a.name))
+    : [];
 
   const showMore = () => {
     setVisibleCount(batchData.length);
   };
+  
+  if (isLoading) {
+    return (
+        <section className="py-20 bg-background">
+            <div className="container mx-auto">
+                <div className="text-center mb-12">
+                    <Skeleton className="h-12 w-1/2 mx-auto" />
+                    <Skeleton className="h-6 w-3/4 mx-auto mt-2" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                    <Skeleton className="h-40 w-full" />
+                    <Skeleton className="h-40 w-full" />
+                    <Skeleton className="h-40 w-full" />
+                </div>
+                 <Skeleton className="h-64 w-full" />
+            </div>
+        </section>
+    )
+  }
+
+  if (!stats) {
+    return null; // Or some error state
+  }
+
 
   return (
     <section className="py-20 bg-background">
@@ -45,7 +93,7 @@ export default function Stats() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-5xl font-bold text-accent">{totalRegistered}<span className="text-3xl text-muted-foreground">/{totalCapacity}</span></p>
+              <p className="text-5xl font-bold text-accent">{stats.total_registered}<span className="text-3xl text-muted-foreground">/{totalCapacity}</span></p>
             </CardContent>
           </Card>
           <Card className="text-center shadow-lg hover:shadow-2xl transition-shadow duration-300">
@@ -56,7 +104,7 @@ export default function Stats() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-5xl font-bold text-primary">{maleCount}</p>
+              <p className="text-5xl font-bold text-primary">{stats.gender_count.male || 0}</p>
             </CardContent>
           </Card>
           <Card className="text-center shadow-lg hover:shadow-2xl transition-shadow duration-300">
@@ -67,7 +115,7 @@ export default function Stats() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-5xl font-bold text-pink-500">{femaleCount}</p>
+              <p className="text-5xl font-bold text-pink-500">{stats.gender_count.female || 0}</p>
             </CardContent>
           </Card>
         </div>

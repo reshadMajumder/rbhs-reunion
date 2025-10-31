@@ -1,31 +1,35 @@
+
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, Shield, User, Users } from 'lucide-react';
+import { Star, Shield, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const pricingTiers = [
   {
     title: 'Senior RBMBIAN',
     batch: 'Batch 1989 - 2016',
-    price: 1500,
-    features: ['Full Access to All Reunion Events', 'Grand Gala Dinner', 'Exclusive Souvenir Kit', 'Alumni Network Directory'],
+    price: 1530,
+    fee: 30,
+    features: ['Gifts of Memory', 'Raffle Draw Entry', 'Full Food Coupon', 'Cultural Event Access', 'Exclusive Alumni Kit'],
     icon: <Star className="h-8 w-8 text-amber-400" />,
     isFeatured: true,
   },
   {
     title: 'Junior RBMBIAN',
     batch: 'Batch 2017 - 2026',
-    price: 1000,
-    features: ['Full Access to All Reunion Events', 'Grand Gala Dinner', 'Standard Souvenir Kit', 'Networking Opportunities'],
+    price: 1020,
+    fee: 20,
+    features: ['Gifts of Memory', 'Raffle Draw Entry', 'Full Food Coupon', 'Cultural Event Access', 'Standard Alumni Kit'],
     icon: <Shield className="h-8 w-8 text-primary" />,
     isFeatured: false,
   },
   {
     title: 'Guest',
     batch: 'Accompanying an alumnus',
-    price: 800,
-    features: ['Access with Alumnus', 'Grand Gala Dinner', 'Photo Booth Access', 'Networking Opportunities'],
+    price: 820,
+    fee: 20,
+    features: ['Access with Alumnus', 'Raffle Draw Entry', 'Full Food Coupon', 'Cultural Event Access', 'Photo Booth Access'],
     icon: <Users className="h-8 w-8 text-accent" />,
     isFeatured: false,
   },
@@ -52,6 +56,7 @@ export default function Pricing() {
                 <div className="text-center mb-6">
                   <span className="text-4xl font-bold">{tier.price}tk</span>
                   <span className="text-muted-foreground">/person</span>
+                   <p className="text-xs text-muted-foreground mt-1">(Includes {tier.fee}tk processing fee)</p>
                 </div>
                 <ul className="space-y-3 text-sm">
                   {tier.features.map((feature, i) => (

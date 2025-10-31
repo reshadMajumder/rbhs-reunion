@@ -22,8 +22,17 @@ export default function PaymentStatus({ payments, profile }: PaymentStatusProps)
   const registrationPayment = payments.find(p => p.payment_type === 'registration');
   
   const getRegistrationFee = () => {
-    if (!profile || !profile.batch) return 1500; // Default fee
-    return profile.batch >= 2017 ? 1000 : 1500;
+    if (!profile) return 1500 + 30; // Default fee
+
+    if (profile.is_guest) {
+        return 800 + 20;
+    }
+    
+    if (profile.batch) {
+        return profile.batch >= 2017 ? 1000 + 20 : 1500 + 30;
+    }
+
+    return 1500 + 30; // Default for alumni if batch is somehow missing
   };
   const registrationFee = getRegistrationFee();
 
@@ -74,7 +83,7 @@ export default function PaymentStatus({ payments, profile }: PaymentStatusProps)
                     <p className="text-lg">Your registration fee is:</p>
                     <p className="text-4xl font-bold text-primary my-2">{registrationFee.toLocaleString()}tk</p>
                     <p className="text-muted-foreground text-sm">
-                    {profile?.batch && (profile.batch >= 2017 ? '(Junior RBMBIAN)' : '(Senior RBMBIAN)')}
+                        {profile?.is_guest ? '(Guest)' : (profile?.batch && (profile.batch >= 2017 ? '(Junior RBMBIAN)' : '(Senior RBMBIAN)'))}
                     </p>
                 </div>
             </CardContent>

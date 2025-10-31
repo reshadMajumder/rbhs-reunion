@@ -1,9 +1,10 @@
+
 'use server';
 
 /**
  * @fileOverview This file defines a Genkit flow to generate personalized sections for the reunion landing page.
  *
- * The flow uses user activity data and school information to determine which sections (e.g., Gifts, Food, Music) are most relevant to the user.
+ * The flow uses user activity data and school information to determine which sections (e.g., Gifts, Food, Cultural) are most relevant to the user.
  *
  * @param {string} userActivity - A string containing the user's recent activities on the landing page.
  * @returns {Promise<string[]>} - A promise that resolves to an array of section names to display.
@@ -19,7 +20,7 @@ const PersonalizedSectionsInputSchema = z.object({
   schoolInfo: z
     .string()
     .optional()
-    .describe('General information about Ranir Bazar Model School.'),
+    .describe('General information about Ranir Bazar High School.'),
 });
 
 export type PersonalizedSectionsInput = z.infer<
@@ -42,7 +43,7 @@ const personalizedSectionsPrompt = ai.definePrompt({
   name: 'personalizedSectionsPrompt',
   input: {schema: PersonalizedSectionsInputSchema},
   output: {schema: PersonalizedSectionsOutputSchema},
-  prompt: `Based on the user's activity and school information, suggest which of the following sections would be most relevant to display to the user to increase engagement and registration for the Ranir Bazar Model School reunion. Available sections include: Gifts, Food, Music.
+  prompt: `Based on the user's activity and school information, suggest which of the following sections would be most relevant to display to the user to increase engagement and registration for the Ranir Bazar High School reunion. Available sections include: Gifts, Food, Cultural.
 
 User Activity: {{{userActivity}}}
 School Information: {{{schoolInfo}}}

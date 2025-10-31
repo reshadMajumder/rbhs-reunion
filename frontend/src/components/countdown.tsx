@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,7 +8,7 @@ const Countdown = () => {
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const difference = +new Date('2025-12-25T10:00:00') - +new Date();
+      const difference = +new Date('2026-03-23T10:00:00') - +new Date();
       let newTimeLeft: { [key: string]: number } = {};
 
       if (difference > 0) {

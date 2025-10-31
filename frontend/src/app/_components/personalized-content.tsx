@@ -1,18 +1,19 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import { getPersonalizedSectionsAction } from '@/app/actions';
 import GiftsSection from './gifts';
 import FoodSection from './food';
-import MusicSection from './music';
+import CulturalSection from './cultural';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollWrapper } from '@/components/scroll-wrapper';
-import { Gift, Music, UtensilsCrossed } from 'lucide-react';
+import { Gift, UtensilsCrossed, Theater } from 'lucide-react';
 
 const sectionComponents: { [key: string]: React.ComponentType } = {
   Gifts: GiftsSection,
   Food: FoodSection,
-  Music: MusicSection,
+  Cultural: CulturalSection,
 };
 
 export default function PersonalizedContent() {
@@ -30,7 +31,7 @@ export default function PersonalizedContent() {
         setSections(result);
       } catch (error) {
         console.error("Failed to fetch personalized sections, showing all as a fallback.", error);
-        setSections(['Gifts', 'Food', 'Music']);
+        setSections(['Gifts', 'Food', 'Cultural']);
       }
     }
     

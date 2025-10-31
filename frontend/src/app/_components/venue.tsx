@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
@@ -28,14 +29,14 @@ export default function Venue() {
               )}
             </div>
             <div className="p-8 md:p-12 flex flex-col justify-center bg-card">
-              <h3 className="text-3xl font-bold font-headline mb-6">Ranir Bazar Model School Campus</h3>
+              <h3 className="text-3xl font-bold font-headline mb-6">Ranir Bazar High School Campus</h3>
               
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <MapPin className="h-8 w-8 text-primary mt-1 shrink-0" />
                   <div>
                     <h4 className="font-bold">Location</h4>
-                    <p className="text-muted-foreground">Main School Field, Ranir Bazar, Agartala, Tripura West, India</p>
+                    <p className="text-muted-foreground">Ranir Bazar High School Field</p>
                   </div>
                 </div>
 
@@ -43,7 +44,7 @@ export default function Venue() {
                   <CalendarDays className="h-8 w-8 text-primary mt-1 shrink-0" />
                   <div>
                     <h4 className="font-bold">Date & Time</h4>
-                    <p className="text-muted-foreground">Thursday, December 25, 2025</p>
+                    <p className="text-muted-foreground">Monday, March 23, 2026</p>
                     <p className="text-muted-foreground">10:00 AM onwards</p>
                   </div>
                 </div>

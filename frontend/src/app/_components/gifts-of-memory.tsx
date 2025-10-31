@@ -16,8 +16,8 @@ const gifts = [
     image: PlaceHolderImages.find(p => p.id === 'gift-tshirt'),
   },
   {
-    name: 'Commemorative Hand Band',
-    image: PlaceHolderImages.find(p => p.id === 'gift-hand-band'),
+    name: 'School Magazine',
+    image: PlaceHolderImages.find(p => p.id === 'gift-magazine'),
   },
 ];
 
@@ -34,7 +34,7 @@ export default function GiftsOfMemory() {
             A piece of nostalgia to take home with you.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {gifts.map((gift, index) => (
             <ScrollWrapper key={gift.name} delay={`${index * 150}ms`}>
               <Card className="h-full flex flex-col shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">

@@ -13,7 +13,7 @@ interface RegisteredEventsProps {
 export default function RegisteredEvents({ hasDonation }: RegisteredEventsProps) {
   const event = {
     name: 'RBMB Grand Reunion 2026',
-    date: 'December 25, 2025',
+    date: 'March 23, 2026',
     tier: hasDonation ? 'Valued Contributor' : 'Alumni',
     paymentStatus: 'Paid',
   };

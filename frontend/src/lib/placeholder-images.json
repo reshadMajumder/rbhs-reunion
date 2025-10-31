@@ -8,9 +8,9 @@
     },
     {
       "id": "our-story",
-      "description": "A group of smiling students from Ranir Bazar High School.",
-      "imageUrl": "https://images.unsplash.com/photo-1652878071495-4658783085c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzdHVkZW50cyUyMGZyaWVuZHN8ZW58MHx8fHwxNzYxMzAzMzA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "students friends"
+      "description": "An old, nostalgic photo of the Ranir Bazar High School building.",
+      "imageUrl": "https://res.cloudinary.com/dxz64hu1o/image/upload/v1761938055/rbmb-story_ane361.jpg",
+      "imageHint": "old school"
     },
     {
       "id": "instruction-video-thumb",
@@ -31,16 +31,16 @@
       "imageHint": "catering food"
     },
     {
-      "id": "music-section",
-      "description": "A live band performing on a stage.",
-      "imageUrl": "https://images.unsplash.com/photo-1565035010268-a3816f98589a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsaXZlJTIwYmFuZHxlbnwwfHx8fDE3NjEzMDMzMDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "live band"
+      "id": "cultural-section",
+      "description": "An illustration of children enjoying autumn hobbies.",
+      "imageUrl": "https://img.freepik.com/free-vector/beautiful-illustration-autumn-children-hobbies_52683-71558.jpg?semt=ais_hybrid&w=740&q=80",
+      "imageHint": "children illustration"
     },
     {
       "id": "venue-image",
-      "description": "Interior of a decorated event hall for the reunion.",
-      "imageUrl": "https://images.unsplash.com/photo-1709521440400-bf38b562b194?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxldmVudCUyMGhhbGx8ZW58MHx8fHwxNzYxMjQzNjMzfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "event hall"
+      "description": "A map showing the location of the event.",
+      "imageUrl": "https://res.cloudinary.com/dxz64hu1o/image/upload/v1761941993/Screenshot_2025-11-01_021927_rmifwq.png",
+      "imageHint": "event map"
     },
     {
       "id": "gift-mug",
@@ -51,14 +51,14 @@
     {
       "id": "gift-tshirt",
       "description": "A t-shirt with the alumni reunion logo.",
-      "imageUrl": "https://images.unsplash.com/photo-1702609342206-c37562b99740?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxsb2dvJTIwdC1zaGlydHxlbnwwfHx8fDE3NjEzMTgwMzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "logo t-shirt"
+      "imageUrl": "https://www.thenewstore.nyc/cdn/shop/files/tns_champion_tns_alumni_gray.png?v=1750757197&width=1946",
+      "imageHint": "alumni t-shirt"
     },
     {
-      "id": "gift-hand-band",
-      "description": "A stylish hand band for the reunion event.",
-      "imageUrl": "https://images.unsplash.com/photo-1704536917568-af87f9a87312?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxldmVudCUyMHdyaXN0YmFuZHxlbnwwfHx8fDE3NjEzMTgwMzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "event wristband"
+      "id": "gift-magazine",
+      "description": "A school magazine cover.",
+      "imageUrl": "https://img.freepik.com/free-psd/school-magazine-cover-template-design_23-2151955393.jpg",
+      "imageHint": "school magazine"
     }
   ]
 }
