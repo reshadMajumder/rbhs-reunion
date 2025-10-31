@@ -16,7 +16,7 @@ class Sponsors(models.Model):
     name = models.CharField(max_length=55)
     # store sponsor logos in Cloudinary instead of local MEDIA_ROOT
     logo = CloudinaryField('image', blank=True, null=True)
-    serial_number = models.IntegerField(unique=True,)
+    serial_number = models.IntegerField(unique=True,blank=True, null=True)
 
 
     def __str__(self):
