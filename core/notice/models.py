@@ -1,5 +1,5 @@
 from django.db import models
-
+from cloudinary.models import CloudinaryField
 
 
 class Notice(models.Model):
@@ -14,7 +14,8 @@ class Notice(models.Model):
 
 class Sponsors(models.Model):
     name = models.CharField(max_length=55)
-    logo = models.ImageField(upload_to='sponsors/logos/')
+    # store sponsor logos in Cloudinary instead of local MEDIA_ROOT
+    logo = CloudinaryField('image', blank=True, null=True)
     serial_number = models.IntegerField(unique=True,)
 
 
