@@ -78,7 +78,15 @@ class DonationStatsView(APIView):
             donation_list.append({
                 "name": d.user.name,
                 "batch": d.user.batch,
-                "image": request.build_absolute_uri(d.user.image.url) if getattr(d.user, "image", None) else None,
+                # use profile_image field from User model (CloudinaryField)
+                "image": (
+                    (d.user.profile_image.url if getattr(d.user, 'profile_image', None) else None)
+                    and (
+                        d.user.profile_image.url
+                        if str(d.user.profile_image.url).startswith('http')
+                        else request.build_absolute_uri(d.user.profile_image.url)
+                    )
+                ),
                 "amount": float(d.amount),
                 "transaction_id": d.transaction_id,
                 "method": d.method,
