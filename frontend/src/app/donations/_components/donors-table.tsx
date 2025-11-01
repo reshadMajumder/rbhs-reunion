@@ -12,10 +12,11 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { type Donation, getDonations } from '@/lib/donations-service';
 import { Skeleton } from '@/components/ui/skeleton';
+import Link from 'next/link';
 
 export default function DonorsTable() {
     const [donations, setDonations] = React.useState<Donation[]>([]);
@@ -65,7 +66,17 @@ export default function DonorsTable() {
     }
 
     if (donations.length === 0) {
-        return <p className="text-center text-muted-foreground">No donations have been made yet.</p>
+        return (
+            <div className="text-center py-12 space-y-4">
+                <p className="text-lg text-muted-foreground">Be the first to contribute!</p>
+                <Button asChild>
+                    <Link href="/dashboard/donate">
+                        <Heart className="mr-2 h-4 w-4" />
+                        Donate Now
+                    </Link>
+                </Button>
+            </div>
+        )
     }
 
 

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,7 +8,7 @@ import { Users, User, Heart, Plus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { API_BASE_URL } from '@/lib/constants';
 
-const totalCapacity = 1000;
+const totalCapacity = 2000;
 const INITIAL_VISIBLE_COUNT = 12;
 
 interface RegistrationStats {

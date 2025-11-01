@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { Menu, X, LayoutDashboard, LogIn, Heart } from 'lucide-react';
+import { Menu, X, LayoutDashboard, LogIn, Heart, MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { API_BASE_URL } from '@/lib/constants';
 
@@ -118,6 +118,9 @@ export default function Header() {
         </Link>
         <div className="hidden sm:flex items-center gap-2">
           <Button variant="ghost" asChild>
+            <Link href="/contact"><MessageSquare className="mr-2 h-4 w-4" /> Contact Us</Link>
+          </Button>
+          <Button variant="ghost" asChild>
             <Link href="/dashboard/donate"><Heart className="mr-2 h-4 w-4" /> Donate</Link>
           </Button>
           {authButton}
@@ -135,6 +138,9 @@ export default function Header() {
       {isMenuOpen && (
         <div className="sm:hidden p-4 border-t">
           <div className="flex flex-col gap-4">
+             <Button variant="outline" asChild className="w-full" onClick={closeMenu}>
+                <Link href="/contact"><MessageSquare className="mr-2 h-4 w-4" /> Contact Us</Link>
+            </Button>
              <Button variant="outline" asChild className="w-full" onClick={closeMenu}>
                 <Link href="/dashboard/donate"><Heart className="mr-2 h-4 w-4" /> Donate</Link>
             </Button>

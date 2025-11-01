@@ -1,13 +1,14 @@
 import { Facebook, Instagram, Twitter } from 'lucide-react';
 import { Logo } from './logo';
 import { Button } from './ui/button';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
     <footer className="bg-card text-card-foreground border-t">
       <div className="container mx-auto py-12 px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-          <div className="flex flex-col items-center md:items-start">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <Logo className="h-10 w-10" />
               <span className="text-lg font-bold font-headline">
@@ -19,10 +20,11 @@ export default function Footer() {
             </p>
           </div>
           <div>
-            <h3 className="font-bold mb-4 font-headline text-lg">Contact Us</h3>
+            <h3 className="font-bold mb-4 font-headline text-lg">Quick Links</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="mailto:nmahmud2017@gmail.com" className="hover:text-primary transition-colors">info@rbhsreunion.com</a></li>
-              <li><a href="tel:+880 1610-498000" className="hover:text-primary transition-colors">+880 123 456789</a></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
+              <li><Link href="/register" className="hover:text-primary transition-colors">Register</Link></li>
+              <li><Link href="/donations" className="hover:text-primary transition-colors">Donations</Link></li>
             </ul>
           </div>
           <div>

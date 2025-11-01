@@ -32,28 +32,25 @@ import { Upload, Ruler } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { API_BASE_URL } from '@/lib/constants';
-import { Switch } from '@/components/ui/switch';
 
-const registerFormSchema = z.object({
+const guestRegisterFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
   profile_image: z.any().refine(file => file, 'Profile image is required.'),
   bloodGroup: z.string().optional(),
   phone: z.string().optional(),
   profession: z.string().min(2, { message: 'Profession is required.' }),
-  batch: z.coerce.number().int().min(1989, 'Batch year must be 1989 or later.').max(2026, 'Batch year must be 2026 or earlier.'),
-  subject: z.enum(['science', 'commerce', 'humanities'], { required_error: 'Please select your subject.' }),
   religion: z.string().optional(),
   gender: z.enum(['male', 'female', 'other'], { required_error: 'Please select a gender.' }),
   t_shirt_size: z.enum(['S', 'M', 'L', 'XL', 'XXL'], { required_error: 'Please select your T-shirt size.' }),
-  is_guest: z.boolean().optional().default(false),
+  is_guest: z.boolean().default(true),
   add_my_image_to_magazine: z.boolean().optional().default(false),
   agree: z.boolean().refine((val) => val === true, {
     message: 'You must agree to the terms.',
   }),
 });
 
-type RegisterFormValues = z.infer<typeof registerFormSchema>;
+type GuestRegisterFormValues = z.infer<typeof guestRegisterFormSchema>;
 
 const tshirtSizes = [
     { size: 'S', chest: '38"', length: '27"' },
@@ -63,20 +60,17 @@ const tshirtSizes = [
     { size: 'XXL', chest: '46"', length: '31"' },
 ];
 
-const batchYears = Array.from({ length: 2026 - 1989 + 1 }, (_, i) => String(1989 + i)).reverse();
-
-
-export default function RegisterForm() {
+export default function GuestRegisterForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerFormSchema),
+  const form = useForm<GuestRegisterFormValues>({
+    resolver: zodResolver(guestRegisterFormSchema),
     mode: 'onChange',
     defaultValues: {
-        is_guest: false,
+        is_guest: true,
         add_my_image_to_magazine: false,
     }
   });
@@ -93,15 +87,16 @@ export default function RegisterForm() {
     }
   }
 
-  async function onSubmit(data: RegisterFormValues) {
+  async function onSubmit(data: GuestRegisterFormValues) {
     setIsLoading(true);
     
     const formData = new FormData();
+    
     Object.entries(data).forEach(([key, value]) => {
         if (key === 'is_guest' || key === 'add_my_image_to_magazine') {
             formData.append(key, String(value));
         } else if (value) {
-            formData.append(key, value);
+            formData.append(key, value as string | Blob);
         }
     });
 
@@ -120,7 +115,6 @@ export default function RegisterForm() {
             });
             router.push('/login');
         } else {
-            // Handle specific field errors from the API
             const errorMessages = Object.entries(result).map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`).join('\n');
             toast({
                 variant: 'destructive',
@@ -225,32 +219,7 @@ export default function RegisterForm() {
           />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="batch"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Batch Year</FormLabel>
-                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={String(field.value)}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your batch" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                        {batchYears.map((year) => (
-                            <SelectItem key={year} value={year}>
-                                {year}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-           <FormField
+        <FormField
             control={form.control}
             name="profession"
             render={({ field }) => (
@@ -263,39 +232,7 @@ export default function RegisterForm() {
                 </FormItem>
             )}
             />
-        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="subject"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Subject</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl><RadioGroupItem value="science" /></FormControl>
-                      <FormLabel className="font-normal">Science</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl><RadioGroupItem value="commerce" /></FormControl>
-                      <FormLabel className="font-normal">Commerce</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl><RadioGroupItem value="humanities" /></FormControl>
-                      <FormLabel className="font-normal">Humanities</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="gender"
@@ -306,7 +243,7 @@ export default function RegisterForm() {
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="flex flex-col space-y-1"
+                    className="flex space-x-4"
                   >
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl><RadioGroupItem value="male" /></FormControl>
@@ -326,7 +263,6 @@ export default function RegisterForm() {
               </FormItem>
             )}
           />
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
@@ -459,7 +395,7 @@ export default function RegisterForm() {
         />
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? 'Creating Account...' : 'Create Account'}
+          {isLoading ? 'Creating Account...' : 'Create Guest Account'}
         </Button>
       </form>
     </Form>

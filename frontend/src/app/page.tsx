@@ -18,6 +18,7 @@ import Venue from './_components/venue';
 import Sponsors from './_components/sponsors';
 import Donations from './_components/donations';
 import GiftsOfMemory from './_components/gifts-of-memory';
+import ContactSection from './_components/contact-section';
 
 export default function Home() {
   const parallaxImage = PlaceHolderImages.find(p => p.id === 'parallax-bg');
@@ -68,6 +69,9 @@ export default function Home() {
               </ScrollWrapper>
               <ScrollWrapper>
                 <Sponsors />
+              </ScrollWrapper>
+              <ScrollWrapper>
+                <ContactSection />
               </ScrollWrapper>
             </div>
           </div>

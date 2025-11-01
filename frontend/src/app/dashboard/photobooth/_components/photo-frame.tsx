@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -130,6 +131,10 @@ export default function PhotoFrame() {
         <div className="space-y-4">
             <h3 className="text-lg font-semibold">Preview</h3>
             <div ref={frameRef} className="relative w-full aspect-square bg-gradient-to-br from-yellow-200 via-blue-300 to-sky-400 rounded-lg overflow-hidden flex items-center justify-center p-4">
+                {/* Background Logo */}
+                <div className="absolute inset-0 z-0 opacity-10">
+                    <Logo className="w-full h-full" />
+                </div>
                 {/* Background Texts & Icons */}
                 <span className="absolute top-[10%] left-[5%] text-4xl font-headline text-purple-400/50 -rotate-12 opacity-80">Reunion</span>
                 <span className="absolute bottom-[8%] right-[5%] text-5xl font-graffiti text-accent/50 rotate-6 opacity-80">স্মৃতিচারণ</span>
@@ -145,7 +150,7 @@ export default function PhotoFrame() {
                 <Compass className="absolute bottom-[15%] right-[30%] text-white/30 h-10 w-10 rotate-[25deg]" />
 
                 {/* Circular Frame for User Image */}
-                <div className="relative z-10 w-[70%] aspect-square rounded-full border-4 border-white shadow-2xl flex items-center justify-center bg-muted/50 overflow-hidden">
+                <div className="relative z-10 w-2/3 aspect-square rounded-full border-4 border-white shadow-2xl flex items-center justify-center bg-muted/50 overflow-hidden">
                      {userImage ? (
                         <div className="absolute w-full h-full"
                              style={{

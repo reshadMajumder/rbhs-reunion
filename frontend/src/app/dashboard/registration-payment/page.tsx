@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Suspense } from 'react';
@@ -13,10 +14,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { API_BASE_URL } from '@/lib/constants';
 import { fetchWithAuth } from '@/lib/api';
+import { CopyableText } from '@/components/copyable-text';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
+import Image from 'next/image';
 
 const paymentSchema = z.object({
   transaction_id: z.string().min(1, 'Transaction ID is required.'),
-  method: z.enum(['bkash', 'nagad', 'rocket'], { required_error: 'Payment method is required.' }),
+  method: z.literal('bkash', {
+    errorMap: () => ({ message: "Please select bKash as the payment method." }),
+  }),
   phone: z.string().min(1, 'Phone number is required.'),
 });
 
@@ -31,6 +38,9 @@ function RegistrationPaymentPageContent() {
 
   const form = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentSchema),
+    defaultValues: {
+        method: 'bkash'
+    }
   });
 
   async function onSubmit(data: PaymentFormValues) {
@@ -87,21 +97,48 @@ function RegistrationPaymentPageContent() {
   return (
     <div className="flex justify-center items-center py-12">
         <Card className="w-full max-w-lg">
-            <CardHeader>
+            <CardHeader className="text-center">
                 <CardTitle>Complete Registration Payment</CardTitle>
-                <CardDescription>
-                    Your registration fee is <span className="font-bold text-primary">{Number(amount).toLocaleString()}tk</span>.
-                    Please send this amount to one of our official numbers and enter the transaction details below.
-                </CardDescription>
+                <div className="py-4">
+                  <p className="text-lg">Your registration fee is:</p>
+                  <p className="text-5xl font-bold text-primary my-2">{Number(amount).toLocaleString()}tk</p>
+                </div>
+                 <Alert variant="destructive" className="text-left">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertTitle>গুরুত্বপূর্ণ নোটিশ</AlertTitle>
+                  <AlertDescription>
+                   আপনি নিবন্ধনের জন্য শুধুমাত্র একবার অর্থ প্রদান করতে পারবেন। আপনি যদি সঠিক পরিমাণ অর্থ প্রদান না করেন তবে আপনার অর্থপ্রদান গৃহীত হবে না।
+                  </AlertDescription>
+                </Alert>
             </CardHeader>
             <CardContent>
-                {/* Official numbers can be listed here */}
-                <div className="mb-6 p-4 bg-muted rounded-lg text-sm">
-                    <p className="font-bold">Official Payment Numbers:</p>
-                    <ul className="list-disc list-inside mt-2">
-                        <li>bKash (Merchant): <span className="font-mono">01234567890</span></li>
-                        <li>Nagad (Personal): <span className="font-mono">01987654321</span></li>
-                    </ul>
+                <div className="mb-6">
+                    <Image 
+                        src="https://res.cloudinary.com/dxz64hu1o/image/upload/v1761978329/bkash-payment-instruction_ahugej.png"
+                        alt="bKash Payment Instructions"
+                        width={1080}
+                        height={1920}
+                        className="w-full h-auto rounded-lg border shadow-md"
+                    />
+                     <p className="text-xs text-muted-foreground text-center mt-2">Tap and hold to zoom</p>
+                </div>
+                <div className="mb-6 p-4 bg-muted rounded-lg text-sm space-y-4">
+                    <p className="font-bold">Payment Instructions:</p>
+                    <ol className="list-decimal list-inside space-y-3">
+                        <li>Open your bKash App and select "Make Payment".</li>
+                        <li>
+                            <span >Enter the Merchant number:</span>
+                            <CopyableText text="+8801617895466" />
+                        </li>
+                         <li>
+                            <span >Enter the amount:</span> <span className="font-bold text-bkash">{Number(amount).toLocaleString()}tk</span>
+                        </li>
+                         <li>
+                            <span >Enter reference:</span>
+                            <CopyableText text="reunion2026" />
+                        </li>
+                        <li>Complete the payment and copy the Transaction ID (TrxID).</li>
+                    </ol>
                 </div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -110,7 +147,7 @@ function RegistrationPaymentPageContent() {
                             name="phone"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel>Your Phone Number</FormLabel>
+                                <FormLabel>Your bKash Phone Number</FormLabel>
                                 <FormControl>
                                     <Input placeholder="The number you paid from" {...field} />
                                 </FormControl>
@@ -132,8 +169,6 @@ function RegistrationPaymentPageContent() {
                                     </FormControl>
                                     <SelectContent>
                                     <SelectItem value="bkash">bKash</SelectItem>
-                                    <SelectItem value="nagad">Nagad</SelectItem>
-                                    <SelectItem value="rocket">Rocket</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -147,7 +182,7 @@ function RegistrationPaymentPageContent() {
                                 <FormItem>
                                 <FormLabel>Transaction ID (TrxID)</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Enter the TrxID from your payment message" {...field} />
+                                    <Input placeholder="Enter the TrxID from your bKash message" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>

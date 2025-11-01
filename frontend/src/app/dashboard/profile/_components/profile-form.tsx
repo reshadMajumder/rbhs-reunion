@@ -37,7 +37,7 @@ const profileFormSchema = z.object({
   phone: z.string().optional(),
   bloodGroup: z.string().optional(),
   profession: z.string().min(2, { message: 'Profession is required.' }),
-  batch: z.coerce.number().int().min(1980, 'Invalid batch year.').max(new Date().getFullYear(), 'Invalid batch year.'),
+  batch: z.coerce.number().int().min(1980, 'Invalid batch year.').max(new Date().getFullYear(), 'Invalid batch year.').optional(),
   subject: z.enum(['science', 'commerce', 'humanities']).optional(),
   religion: z.string().optional(),
   gender: z.enum(['male', 'female', 'other']).optional(),
@@ -70,6 +70,7 @@ export default function ProfileForm({ defaultValues }: ProfileFormProps) {
   });
 
   const { formState: { dirtyFields, isSubmitting } } = form;
+  const isGuest = defaultValues.is_guest;
 
   async function onSubmit(data: ProfileFormValues) {
     const changedData: Partial<ProfileFormValues> = {};
@@ -149,35 +150,37 @@ export default function ProfileForm({ defaultValues }: ProfileFormProps) {
             />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-            control={form.control}
-            name="batch"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Batch Year</FormLabel>
-                <FormControl>
-                    <Input type="number" placeholder="e.g., 2005" {...field} disabled />
-                </FormControl>
-                <FormDescription>Your batch year cannot be changed.</FormDescription>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="bloodGroup"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Blood Group</FormLabel>
-                <FormControl>
-                    <Input placeholder="e.g., O+" {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-        </div>
+        {!isGuest && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                control={form.control}
+                name="batch"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Batch Year</FormLabel>
+                    <FormControl>
+                        <Input type="number" placeholder="e.g., 2005" {...field} disabled />
+                    </FormControl>
+                    <FormDescription>Your batch year cannot be changed.</FormDescription>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="bloodGroup"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Blood Group</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., O+" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
+        )}
         
         <FormField
             control={form.control}
@@ -194,36 +197,38 @@ export default function ProfileForm({ defaultValues }: ProfileFormProps) {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
-            control={form.control}
-            name="subject"
-            render={({ field }) => (
-                <FormItem className="space-y-3">
-                <FormLabel>Subject</FormLabel>
-                <FormControl>
-                    <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                    >
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl><RadioGroupItem value="science" /></FormControl>
-                        <FormLabel className="font-normal">Science</FormLabel>
+            {!isGuest && (
+                <FormField
+                control={form.control}
+                name="subject"
+                render={({ field }) => (
+                    <FormItem className="space-y-3">
+                    <FormLabel>Subject</FormLabel>
+                    <FormControl>
+                        <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                        >
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl><RadioGroupItem value="science" /></FormControl>
+                            <FormLabel className="font-normal">Science</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl><RadioGroupItem value="commerce" /></FormControl>
+                            <FormLabel className="font-normal">Commerce</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl><RadioGroupItem value="humanities" /></FormControl>
+                            <FormLabel className="font-normal">Humanities</FormLabel>
+                        </FormItem>
+                        </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
                     </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl><RadioGroupItem value="commerce" /></FormControl>
-                        <FormLabel className="font-normal">Commerce</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl><RadioGroupItem value="humanities" /></FormControl>
-                        <FormLabel className="font-normal">Humanities</FormLabel>
-                    </FormItem>
-                    </RadioGroup>
-                </FormControl>
-                <FormMessage />
-                </FormItem>
+                )}
+                />
             )}
-            />
             <FormField
             control={form.control}
             name="gender"

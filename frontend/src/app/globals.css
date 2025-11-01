@@ -41,6 +41,7 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --bkash: 337 78% 48%;
   }
 }
 
@@ -64,7 +65,7 @@ body {
 
   .marquee-content {
     display: flex;
-    animation: marquee 10s linear infinite;
+    animation: marquee 5s linear infinite;
   }
   
   @media (max-width: 640px) {

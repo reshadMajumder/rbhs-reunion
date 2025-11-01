@@ -38,21 +38,24 @@ export async function getDonations(): Promise<DonationStats> {
     }
     const data: DonationStats = await response.json();
 
+    // The API returns a list of donations, process them.
+    const donations = Array.isArray(data) ? data : data.donations || [];
+
     // Determine top donors to mark them as featured
-    const sortedDonations = [...data.donations].sort((a, b) => Number(b.amount) - Number(a.amount));
+    const sortedDonations = [...donations].sort((a, b) => Number(b.amount) - Number(a.amount));
     const topDonationAmount = sortedDonations.length > 0 ? Number(sortedDonations[0].amount) : 0;
     
     // Feature donors who have donated 80% or more of the top donation amount
     // or any donation over a certain threshold, e.g., 10000
     const featuredThreshold = Math.max(topDonationAmount * 0.8, 10000);
 
-    const processedDonations = data.donations.map(donation => ({
+    const processedDonations = donations.map(donation => ({
       ...donation,
       isFeatured: Number(donation.amount) >= featuredThreshold
     }));
 
     const processedData = {
-        ...data,
+        total_donation_amount: Array.isArray(data) ? "0" : data.total_donation_amount || "0",
         donations: processedDonations.sort((a, b) => Number(b.amount) - Number(a.amount))
     };
 

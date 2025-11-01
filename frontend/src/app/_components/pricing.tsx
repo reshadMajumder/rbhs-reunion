@@ -14,6 +14,7 @@ const pricingTiers = [
     features: ['Gifts of Memory', 'Raffle Draw Entry', 'Full Food Coupon', 'Cultural Event Access', 'Exclusive Alumni Kit'],
     icon: <Star className="h-8 w-8 text-amber-400" />,
     isFeatured: true,
+    link: '/register',
   },
   {
     title: 'Junior RBMBIAN',
@@ -23,6 +24,7 @@ const pricingTiers = [
     features: ['Gifts of Memory', 'Raffle Draw Entry', 'Full Food Coupon', 'Cultural Event Access', 'Standard Alumni Kit'],
     icon: <Shield className="h-8 w-8 text-primary" />,
     isFeatured: false,
+    link: '/register',
   },
   {
     title: 'Guest',
@@ -32,6 +34,7 @@ const pricingTiers = [
     features: ['Access with Alumnus', 'Raffle Draw Entry', 'Full Food Coupon', 'Cultural Event Access', 'Photo Booth Access'],
     icon: <Users className="h-8 w-8 text-accent" />,
     isFeatured: false,
+    link: '/register/guest',
   },
 ];
 
@@ -69,7 +72,7 @@ export default function Pricing() {
               </CardContent>
               <CardFooter>
                 <Button asChild className={cn("w-full", tier.isFeatured ? "bg-accent text-accent-foreground hover:bg-accent/90" : "bg-primary text-primary-foreground hover:bg-primary/90")}>
-                   <Link href="/register">
+                   <Link href={tier.link}>
                         Register as {tier.title}
                    </Link>
                 </Button>
