@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["https://rbhs-reunion-api.vercel.app", "rbhs-reunion-api.vercel.app", "localhost", ]
 
 
 # Application definition
@@ -176,13 +176,7 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8080",
-    
 
-]
-CORS_ALLOW_ALL_ORIGINS = True
 
 # add rate limiting / throttling
 REST_FRAMEWORK = {
@@ -202,7 +196,7 @@ REST_FRAMEWORK = {
 
 # JWT Settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -289,4 +283,31 @@ JAZZMIN_SETTINGS = {
     # Copyright
     "copyright": "RBMB Reunion 2025",
 }
+
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_SSL_REDIRECT = True  # only in production
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+
+if DEBUG:
+    SECURE_SSL_REDIRECT = False
+    CSRF_TRUSTED_ORIGINS = [
+        "https://rbhs-reunion-api.vercel.app",
+    ]
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "https://www.rbmbians.com",
+        "https://rbmbians.com",
+        "https://rbhs-reunion.vercel.app",
+        
+
+    ]
 
