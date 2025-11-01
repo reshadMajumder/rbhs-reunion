@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ["https://rbhs-reunion-api.vercel.app", "rbhs-reunion-api.vercel.app", "localhost", ]
+ALLOWED_HOSTS = ["rbhs-reunion-api.vercel.app", "localhost","127.0.0.1:8000" ]
 
 
 # Application definition
@@ -296,18 +296,20 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 
-if DEBUG:
-    SECURE_SSL_REDIRECT = False
-    CSRF_TRUSTED_ORIGINS = [
+
+CSRF_TRUSTED_ORIGINS = [
         "https://rbhs-reunion-api.vercel.app",
     ]
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:3000",
-        "http://localhost:8080",
-        "https://www.rbmbians.com",
-        "https://rbmbians.com",
-        "https://rbhs-reunion.vercel.app",
-        
 
-    ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "https://rbhs-reunion.vercel.app",
+    "https://rbmbians.com",
+    "https://www.rbmbians.com",
+]
 
+if DEBUG:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
