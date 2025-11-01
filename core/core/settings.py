@@ -178,7 +178,6 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://dev-wing.vercel.app",
     "http://localhost:8080",
     
 
@@ -204,10 +203,10 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'accounts.User'
 
 JAZZMIN_SETTINGS = {
-    "site_title": "RBHS Reunion Admin",
-    "site_header": "RBHS Reunion",
-    "site_brand": "RBHS Reunion",
-    "welcome_sign": "Welcome to RBHS Reunion Admin",
+    "site_title": "RBMB Reunion Admin",
+    "site_header": "RBMB Reunion",
+    "site_brand": "RBMB Reunion",
+    "welcome_sign": "Welcome to RBMB Reunion Admin",
     
     # Custom CSS and JS for dashboard
     "custom_css": None,
@@ -278,6 +277,6 @@ JAZZMIN_SETTINGS = {
     "logo_icon": None,
     
     # Copyright
-    "copyright": "RBHS Reunion 2025",
+    "copyright": "RBMB Reunion 2025",
 }
 
