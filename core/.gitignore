@@ -19,8 +19,7 @@ core/*.sqlite3
 core/*.log
 db.sqlite3
 media/
-staticfiles/
-
+__pycache__/
 # Cloudinary local files (if any)
 *.upload
 
